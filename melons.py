@@ -20,11 +20,6 @@ class AbstractMelonOrder(object):
         if self.species == 'Christmas':
             base_price = base_price * 1.5
 
-        if self.order_type == 'international':
-            flat_fee = 3
-            total = ((1 + self.tax) * self.qty * base_price) + flat_fee
-            return total
-
         total = (1 + self.tax) * self.qty * base_price
 
         return total
@@ -48,8 +43,29 @@ class InternationalMelonOrder(AbstractMelonOrder):
     order_type = "international"
     tax = 0.17
     country_code = 'You forgot to assign a country code!'
+    flat_fee = 3
+
+    def get_total(self):
+        """Calculate price with international flat fee"""
+
+        base_price = 5
+
+        if self.species == 'Christmas':
+            base_price = base_price * 1.5
+
+        total = ((1 + self.tax) * self.qty * base_price) + flat_fee
+        return total
+
 
     def get_country_code(self):
         """Return the country code."""
 
         return self.country_code
+
+class GovernmentMelonOrder(AbstractMelonOrder):
+    """Child class for govt only orders"""
+    tax = 0
+    passed_inspection = False
+
+    def mark_inspection(self, passed):
+        self.passed_inspection = passed
